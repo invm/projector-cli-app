@@ -68,7 +68,7 @@ func getArgs(opts *Opts) ([]string, error) {
 	}
 
 	if operation == Add {
-		if len(opts.Args) == 3 {
+		if len(opts.Args) != 3 {
 			return []string{}, fmt.Errorf("Expected 2 arguments but got %v", len(opts.Args)-1)
 		}
 		return opts.Args[1:], nil

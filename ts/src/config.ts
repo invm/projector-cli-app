@@ -78,7 +78,7 @@ function getArgs(opts: Opts): string[] {
   return opts.args.slice(1);
 }
 
-export function config(opts: Opts): Config {
+export function newConfig(opts: Opts): Config {
   return {
     pwd: getPwd(opts),
     config: getConfig(opts),

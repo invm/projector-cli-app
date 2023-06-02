@@ -2,7 +2,7 @@ use crate::opts::Opts;
 use anyhow::{anyhow, Context, Result};
 use std::path::PathBuf;
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub enum Operation {
     Print(Option<String>),
     Add(String, String),
@@ -51,7 +51,7 @@ impl TryFrom<Vec<String>> for Operation {
                 drain.next().expect("to exist"),
             ));
         }
-        if term == "delete" {
+        if term == "del" {
             if value.len() != 2 {
                 return Err(anyhow!("Operation delete requires 1 argument"));
             }
@@ -83,3 +83,62 @@ fn get_pwd(pwd: Option<PathBuf>) -> Result<PathBuf> {
     }
     return Ok(std::env::current_dir().context("Could not get current directory")?);
 }
+#[cfg(test)]
+mod test {
+    use crate::{opts::Opts, config::{Config, Operation}};
+    use anyhow::{Result};
+
+    #[test]
+    fn test_print_all() -> Result<()>{
+        let config: Config = Opts{
+            pwd: None,
+            args: vec![],
+            config: None,
+        }.try_into()?;
+        assert_eq!(config.operation, Operation::Print(None));
+        return Ok(())
+    }
+
+    #[test]
+    fn test_print_key() -> Result<()>{
+        let config: Config = Opts{
+            pwd: None,
+            args: vec![String::from("foo")],
+            config: None,
+        }.try_into()?;
+        assert_eq!(config.operation, Operation::Print(Some(String::from("foo"))));
+        return Ok(())
+    }
+
+
+    #[test]
+    fn test_add() -> Result<()>{
+        let config: Config = Opts{
+            pwd: None,
+            args: vec![
+                String::from("add"),
+                String::from("foo"),
+                String::from("bar"),
+            ],
+            config: None,
+        }.try_into()?;
+        assert_eq!(config.operation, Operation::Add(String::from("foo"), String::from("bar")));
+        return Ok(())
+    }
+
+    #[test]
+    fn test_delete() -> Result<()>{
+        let config: Config = Opts{
+            pwd: None,
+            args: vec![
+                String::from("del"),
+                String::from("foo"),
+            ],
+            config: None,
+        }.try_into()?;
+        assert_eq!(config.operation, Operation::Delete(String::from("foo")));
+        return Ok(())
+    }
+
+}
+
