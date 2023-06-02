@@ -8,7 +8,7 @@ export enum Operation {
 }
 
 export type Config = {
-  args: string[],
+      args: string[],
   operation: Operation,
   config: string,
   pwd: string,
