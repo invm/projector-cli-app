@@ -53,11 +53,11 @@ export class Projector {
   }
 
   setValue(key: string, value: string) {
-    const dir = this.data.projector[this.config.pwd];
-    if (!dir) {
-      this.data.projector[this.config.pwd] = {}
+    const pwd = this.config.pwd;
+    if (!this.data.projector[pwd]) {
+      this.data.projector[pwd] = {};
     }
-    dir[key] = value;
+    this.data.projector[pwd][key] = value;
   }
 
   delValue(key: string) {
@@ -65,6 +65,14 @@ export class Projector {
     if (dir) {
       delete dir[key]
     }
+  }
+
+  save() {
+    const configPath = path.dirname(this.config.config);
+    if (!fs.existsSync(configPath)) {
+      fs.mkdirSync(configPath, { recursive: true })
+    }
+    fs.writeFileSync(this.config.config, JSON.stringify(this.data))
   }
 
   static fromConfig(config: Config): Projector {
