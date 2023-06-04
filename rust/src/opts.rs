@@ -5,7 +5,6 @@ use clap::Parser;
 #[derive(Parser, Debug)]
 #[clap()]
 pub struct Opts {
-    #[clap(default_value = "")]
     pub args: Vec<String>,
     #[clap(short = 'c', long = "config")]
     pub config: Option<PathBuf>,
